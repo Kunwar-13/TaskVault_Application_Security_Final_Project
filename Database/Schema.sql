@@ -68,3 +68,25 @@ CREATE TABLE task_files (
         ON DELETE CASCADE
 );
 GO
+
+-- =============================================================
+-- TABLE 4: audit_logs
+-- Security event log written by AuditLoggingMiddleware
+-- Null user_id means unauthenticated request
+-- =============================================================
+IF OBJECT_ID('audit_logs', 'U') IS NULL
+CREATE TABLE audit_logs (
+    id          INT IDENTITY(1,1) PRIMARY KEY,
+    user_id     INT           NULL,
+    ip_address  NVARCHAR(45)  NOT NULL,
+    method      NVARCHAR(10)  NOT NULL,
+    path        NVARCHAR(255) NOT NULL,
+    status_code INT           NOT NULL,
+    event_note  NVARCHAR(255) NULL,
+    created_at  DATETIME2     NOT NULL DEFAULT GETDATE(),
+
+    CONSTRAINT fk_logs_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE SET NULL
+);
+GO
