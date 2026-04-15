@@ -95,11 +95,19 @@ GO
 -- INDEXES
 -- Speed up the most common queries in the app
 -- =============================================================
-CREATE INDEX idx_tasks_user_id   ON tasks(user_id);
+DROP INDEX IF EXISTS idx_tasks_user_id ON tasks;
+CREATE INDEX idx_tasks_user_id ON tasks(user_id);
+
+DROP INDEX IF EXISTS idx_task_files_task ON task_files;
 CREATE INDEX idx_task_files_task ON task_files(task_id);
+
+DROP INDEX IF EXISTS idx_audit_logs_user ON audit_logs;
 CREATE INDEX idx_audit_logs_user ON audit_logs(user_id);
+
+DROP INDEX IF EXISTS idx_audit_logs_time ON audit_logs;
 CREATE INDEX idx_audit_logs_time ON audit_logs(created_at);
 GO
+
 
 -- =============================================================
 -- SEED DATA
