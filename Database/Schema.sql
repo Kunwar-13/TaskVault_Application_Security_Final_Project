@@ -27,3 +27,24 @@ CREATE TABLE users (
     created_at    DATETIME2     NOT NULL DEFAULT GETDATE()
 );
 GO
+
+-- =============================================================
+-- TABLE 2: tasks
+-- Core task data, always scoped to an owner (user_id)
+-- =============================================================
+IF OBJECT_ID('tasks', 'U') IS NULL
+CREATE TABLE tasks (
+    id          INT IDENTITY(1,1) PRIMARY KEY,
+    user_id     INT            NOT NULL,
+    title       NVARCHAR(100)  NOT NULL,
+    description NVARCHAR(MAX)  NULL,
+    status      NVARCHAR(10)   NOT NULL DEFAULT 'Pending'
+                    CONSTRAINT chk_tasks_status CHECK (status IN ('Pending', 'InProgress', 'Done')),
+    created_at  DATETIME2      NOT NULL DEFAULT GETDATE(),
+    updated_at  DATETIME2      NOT NULL DEFAULT GETDATE(),
+
+    CONSTRAINT fk_tasks_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+);
+GO
