@@ -1,0 +1,22 @@
+# Visual Studio local files
+.vs/
+
+# Build output
+bin/
+obj/
+
+# User-specific settings
+*.user
+*.suo
+
+# Environment / secrets
+appsettings.Development.json
+.env
+
+# Uploads folder contents but keep the folder
+uploads/*
+!uploads/.gitkeep
+
+# Logs folder contents but keep the folder
+logs/*
+!logs/.gitkeep
