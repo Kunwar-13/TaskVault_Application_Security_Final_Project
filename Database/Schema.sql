@@ -90,3 +90,13 @@ CREATE TABLE audit_logs (
         ON DELETE SET NULL
 );
 GO
+
+-- =============================================================
+-- INDEXES
+-- Speed up the most common queries in the app
+-- =============================================================
+CREATE INDEX idx_tasks_user_id   ON tasks(user_id);
+CREATE INDEX idx_task_files_task ON task_files(task_id);
+CREATE INDEX idx_audit_logs_user ON audit_logs(user_id);
+CREATE INDEX idx_audit_logs_time ON audit_logs(created_at);
+GO
