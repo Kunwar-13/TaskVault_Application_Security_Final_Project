@@ -14,4 +14,5 @@ public class Task
     public string Status { get; set; } = "Pending";
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+
 }
