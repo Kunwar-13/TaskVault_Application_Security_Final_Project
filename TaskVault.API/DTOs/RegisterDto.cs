@@ -9,7 +9,11 @@ public class RegisterDto
     [Required(ErrorMessage = "Username is required")]
     [MinLength (3, ErrorMessage = "Username must be atleast 3 characters")]
     [MaxLength (50, ErrorMessage = "Username cannot exceed 50 characters")]
-
     public string Username { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Email is Required")]
+    [EmailAddres(ErrorMessage = "Invalid Email Address Format")]
+    [MaxLength(200, ErrorMessage = "Email cannot exceed 100 characters")]
+    public string Email { get; set; } = string.Empty;
 
 }
