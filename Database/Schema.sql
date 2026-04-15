@@ -48,3 +48,23 @@ CREATE TABLE tasks (
         ON DELETE CASCADE
 );
 GO
+
+-- =============================================================
+-- TABLE 3: task_files
+-- Files uploaded and attached to a specific task
+-- =============================================================
+IF OBJECT_ID('task_files', 'U') IS NULL
+CREATE TABLE task_files (
+    id            INT IDENTITY(1,1) PRIMARY KEY,
+    task_id       INT           NOT NULL,
+    original_name NVARCHAR(255) NOT NULL,
+    stored_name   NVARCHAR(255) NOT NULL UNIQUE,
+    file_size     INT           NOT NULL,
+    mime_type     NVARCHAR(100) NOT NULL,
+    uploaded_at   DATETIME2     NOT NULL DEFAULT GETDATE(),
+
+    CONSTRAINT fk_files_task
+        FOREIGN KEY (task_id) REFERENCES tasks(id)
+        ON DELETE CASCADE
+);
+GO
