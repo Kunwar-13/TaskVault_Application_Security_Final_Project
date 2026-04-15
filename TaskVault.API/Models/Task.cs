@@ -11,4 +11,7 @@ public class Task
     public string Ttile { get; set; } = string.Empty;
     public string? Description { get; set; }
 
+    public string Status { get; set; } = "Pending";
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }
