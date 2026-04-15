@@ -12,4 +12,6 @@ public class TaskFile
     public int FileSize { get; set; }
     public string MimeType { get; set; } = string.Empty;
 
+    public DateTime UploadedAt { get; set; }
+
 }
