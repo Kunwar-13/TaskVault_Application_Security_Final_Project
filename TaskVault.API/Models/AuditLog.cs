@@ -12,4 +12,7 @@ public class AuditLog
     public string Path {  get; set; } = string.Empty;
     public string StatusCode { get; set; }
 
+    public string? EventNote { get; set; }
+    public DateTime CreatedAt { get; set; }
+
 }
