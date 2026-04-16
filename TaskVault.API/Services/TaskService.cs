@@ -13,6 +13,7 @@ public interface ITaskService
     Task<Task?> GetTaskByIdAsync(int taskId, int userId);
     Task<int> CreateTaskAsync(int userId, TaskDto dto);
     Task<bool> UpdateTaskAsync(int taskId, int userId, TaskDto dto);
+    Task<bool> DeleteTaskAsync(int taskId, int userId);
 
 }
 
@@ -102,6 +103,21 @@ public class TaskService : ITaskService
         );
 
         // rows affected = 0 means task not found or not owned by this user
+        return rows > 0;
+    
+    }
+
+    public async Task<bool> DeleteTaskAsync(int taskId, int userId)
+    {
+       
+        using var connection = _db.GetConnection();
+
+        var rows = await connection.ExecuteAsync(
+            @"DELETE FROM tasks
+          WHERE id = @TaskId AND user_id = @UserId",
+            new { TaskId = taskId, UserId = userId }
+        );
+
         return rows > 0;
     
     }
