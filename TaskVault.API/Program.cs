@@ -14,6 +14,7 @@ builder.Services.AddSingleton<DbContext>();
 
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 // JWT Authentication
 var jwtSecret = builder.Configuration["JwtSettings:Secret"]
