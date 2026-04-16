@@ -77,4 +77,37 @@ public class SearchService : ISearchService
         return query;
     }
 
+    public async Task<IEnumerable<Task>> SearchTasksAsync(int userId, string query, string? status)
+    {
+        
+        using var connection = _db.GetConnection();
+
+        // sanitize before anything else
+        var sanitized = SanitizeQuery(query);
+
+        if (string.IsNullOrEmpty(sanitized))
+            return Enumerable.Empty<Task>();
+
+        var sql = @"SELECT id, user_id, title, description, status, created_at, updated_at
+                FROM tasks
+                WHERE user_id = @UserId
+                AND (title LIKE @Query OR description LIKE @Query)";
+
+        if (!string.IsNullOrWhiteSpace(status))
+            sql += " AND status = @Status";
+
+        sql += " ORDER BY created_at DESC";
+
+        return await connection.QueryAsync<Task>(
+            sql,
+            new
+            {
+                UserId = userId,
+                Query = $"%{sanitized}%",
+                Status = status
+            }
+        );
+    
+    }
+
 }
