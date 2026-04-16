@@ -53,4 +53,28 @@ public class SearchService : ISearchService
     
     }
 
+    private string SanitizeQuery(string query)
+    {
+        
+        if (string.IsNullOrWhiteSpace(query){
+        
+            return string.Empty; 
+        
+        }
+
+        // trim whitespace
+        query = query.Trim();
+
+        // cap length to prevent excessively long queries hitting the DB
+        if (query.Length > 100)
+            query = query[..100];
+
+        // remove characters that have no place in a search term
+        var invalidChars = new[] { ';', '\'', '"', '\\', '\0' };
+        foreach (var c in invalidChars)
+            query = query.Replace(c.ToString(), string.Empty);
+
+        return query;
+    }
+
 }
