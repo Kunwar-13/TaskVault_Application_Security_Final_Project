@@ -75,4 +75,18 @@ public class TaskController : ControllerBase
     
     }
 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteTask(int id)
+    {
+       
+        var userId = User.GetUserId();
+        var success = await _taskService.DeleteTaskAsync(id, userId);
+
+        if (!success)
+            return NotFound(new { message = "Task not found." });
+
+        return Ok(new { message = "Task deleted." });
+    
+    }
+
 }
