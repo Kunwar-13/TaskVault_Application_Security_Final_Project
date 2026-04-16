@@ -16,4 +16,10 @@ public class RegisterDto
     [MaxLength(200, ErrorMessage = "Email cannot exceed 100 characters")]
     public string Email { get; set; } = string.Empty;
 
+    [Required(ErrorMessage = "Password is Required")]
+    [MinLength(8, ErrorMessage = "Password must be atleast 8 characters")]
+    [MaxLength(100, ErrorMessage = "Password cannot exceed 100 charaters")]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$", ErrorMessage = "Password must have uppercase, lowercase, number, and special character")]
+    public string Password {  get; set; } = string.Empty;
+
 }
