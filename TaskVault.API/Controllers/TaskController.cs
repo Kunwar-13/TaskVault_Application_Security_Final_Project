@@ -31,4 +31,18 @@ public class TaskController : ControllerBase
     
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetTask(int id)
+    {
+     
+        var userId = User.GetUserId();
+        var task = await _taskService.GetTaskByIdAsync(id, userId);
+
+        if (task == null)
+            return NotFound(new { message = "Task not found." });
+
+        return Ok(task);
+    
+    }
+
 }
