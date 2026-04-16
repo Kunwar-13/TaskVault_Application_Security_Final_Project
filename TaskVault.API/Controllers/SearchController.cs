@@ -39,4 +39,31 @@ public class SearchController : ControllerBase
         return Ok(results);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Search(
+    [FromQuery] string? q,
+    [FromQuery] string? status)
+    {
+        if (string.IsNullOrWhiteSpace(q){
+        
+            return BadRequest(new { message = "Search query cannot be empty." }); 
+        
+        }
+
+        // validate status if provided — only accept known values
+        var allowedStatuses = new[] { "Pending", "InProgress", "Done" };
+
+        if (!string.IsNullOrWhiteSpace(status) && !allowedStatuses.Contains(status)){
+        
+            return BadRequest(new { message = "Status must be Pending, InProgress, or Done." }); 
+
+        }
+
+        var userId = User.GetUserId();
+        var results = await _searchService.SearchTasksAsync(userId, q, status);
+
+        return Ok(results);
+    
+    }
+
 }
