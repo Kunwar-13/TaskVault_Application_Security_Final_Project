@@ -2,6 +2,7 @@
 using Dapper;
 using TaskVault.API.Data;
 using TaskVault.API.Models;
+using TaskVault.API.DTOs;
 
 namespace TaskVault.API.Services;
 
@@ -10,6 +11,7 @@ public interface ITaskService
 
     Task<IEnumerable<Task>> GetTasksByUserAsync(int userId);
     Task<Task?> GetTaskByIdAsync(int taskId, int userId);
+    Task<int> CreateTaskAsync(int userId, TaskDto dto);
 
 }
 
@@ -51,6 +53,28 @@ public class TaskService : ITaskService
             new { TaskId = taskId, UserId = userId }
         );
     
+    }
+
+    public async Task<int> CreateTaskAsync(int userId, TaskDto dto)
+    {
+
+        using var connection = _db.GetConnection();
+
+        var newId = await connection.QuerySingleAsync<int>(
+            @"INSERT INTO tasks (user_id, title, description, status)
+          VALUES (@UserId, @Title, @Description, @Status);
+          SELECT SCOPE_IDENTITY();",
+            new
+            {
+                UserId = userId,
+                dto.Title,
+                dto.Description,
+                dto.Status
+            }
+        );
+
+        return newId;
+
     }
 
 }
