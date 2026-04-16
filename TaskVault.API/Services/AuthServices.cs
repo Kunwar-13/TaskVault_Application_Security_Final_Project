@@ -7,6 +7,8 @@ namespace TaskVault.API.Services;
 public interface IAuthService
 {
 
+    string HashPassword(string plainPassword);
+
 }
 
 public class AuthService : IAuthService
@@ -20,6 +22,13 @@ public class AuthService : IAuthService
     
         _db = db;
         _config = config;
+    
+    }
+
+    public string HashPassword(string plainPassword)
+    {
+     
+        return BCrypt.Net.BCrypt.HashPassword(plainPassword, workFactor: 12);
     
     }
 
