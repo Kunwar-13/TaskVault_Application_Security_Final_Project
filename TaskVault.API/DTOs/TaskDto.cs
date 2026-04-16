@@ -14,4 +14,9 @@ public class TaskDto
     [MaxLength(1000, ErrorMessage = "Description cannot exceed 1000 characters")]
     public string? Description { get; set; }
 
+    [Required(ErrorMessage = "Status is required")]
+    [RegularExpression(@"^(Pending|InProgress|Done)$",
+    ErrorMessage = "Status must be Pending, InProgress, or Done")]
+    public string Status { get; set; } = "Pending";
+
 }
