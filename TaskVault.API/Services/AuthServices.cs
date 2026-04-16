@@ -8,6 +8,7 @@ public interface IAuthService
 {
 
     string HashPassword(string plainPassword);
+    bool VerifyPassword(string plainPassword, string hash);
 
 }
 
@@ -29,6 +30,13 @@ public class AuthService : IAuthService
     {
      
         return BCrypt.Net.BCrypt.HashPassword(plainPassword, workFactor: 12);
+    
+    }
+
+    public bool VerifyPassword(string plainPassword, string hash)
+    {
+     
+        return BCrypt.Net.BCrypt.Verify(plainPassword, hash);
     
     }
 
