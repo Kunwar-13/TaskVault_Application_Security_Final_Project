@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskVault.API.Services;
+using TaskVault.API.Helpers;
 
 namespace TaskVault.API.Controllers;
 
@@ -17,6 +18,16 @@ public class TaskController : ControllerBase
     {
      
         _taskService = taskService;
+    
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetTasks()
+    {
+     
+        var userId = User.GetUserId();
+        var tasks = await _taskService.GetTasksByUserAsync(userId);
+        return Ok(tasks);
     
     }
 
