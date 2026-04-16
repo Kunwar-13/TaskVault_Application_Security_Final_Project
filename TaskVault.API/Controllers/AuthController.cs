@@ -2,6 +2,7 @@
 using TaskVault.API.Services;
 using TaskVault.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TaskVault.API.Controllers;
 
@@ -56,6 +57,16 @@ public class AuthController : ControllerBase
         });
 
         return Ok(new { message = "Login successful." });
+    
+    }
+
+    [HttpPost("logout")]
+    [Authorize]
+    public IActionResult Logout()
+    {
+     
+        Response.Cookies.Delete("jwt");
+        return Ok(new { message = "Logged out successfully." });
     
     }
 
