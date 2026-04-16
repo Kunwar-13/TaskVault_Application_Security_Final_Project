@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskVault.API.Services;
 using TaskVault.API.Helpers;
+using TaskVault.API.DTOs;
 
 namespace TaskVault.API.Controllers;
 
@@ -42,6 +43,21 @@ public class TaskController : ControllerBase
             return NotFound(new { message = "Task not found." });
 
         return Ok(task);
+    
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateTask([FromBody] TaskDto dto)
+    {
+     
+        var userId = User.GetUserId();
+        var newId = await _taskService.CreateTaskAsync(userId, dto);
+
+        return CreatedAtAction(
+            nameof(GetTask),
+            new { id = newId },
+            new { message = "Task created.", taskId = newId }
+        );
     
     }
 
