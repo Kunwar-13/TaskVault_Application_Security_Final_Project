@@ -18,8 +18,7 @@ public class AuthController : ControllerBase
     
     }
 
-    [HttpPost("register")]
-    
+    [HttpPost("register")]  
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
     
@@ -32,6 +31,31 @@ public class AuthController : ControllerBase
         }
 
         return Ok(new { message = "Registration successful." });
+    
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginDto dto)
+    {
+       
+        var token = await _authService.LoginAsync(dto);
+
+        if (token == null){
+            
+            return Unauthorized(new { message = "Invalid email or password." }); 
+        
+        }
+
+        // store JWT in httpOnly cookie — never exposed to JavaScript
+        Response.Cookies.Append("jwt", token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddMinutes(60)
+        });
+
+        return Ok(new { message = "Login successful." });
     
     }
 
