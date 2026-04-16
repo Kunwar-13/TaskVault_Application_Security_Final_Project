@@ -1,5 +1,6 @@
 ﻿using System;
 using TaskVault.API.Services;
+using TaskVault.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TaskVault.API.Controllers;
@@ -14,6 +15,23 @@ public class AuthController : ControllerBase
     {
      
         _authService = authService;
+    
+    }
+
+    [HttpPost("register")]
+    
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+    {
+    
+        var success = await _authService.RegisterAsync(dto);
+
+        if (!success){
+        
+            return Conflict(new { message = "Username or email already exists." }); 
+        
+        }
+
+        return Ok(new { message = "Registration successful." });
     
     }
 
