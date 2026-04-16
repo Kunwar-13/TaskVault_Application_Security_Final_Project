@@ -6,10 +6,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using TaskVault.API.Models;
 using TaskVault.API.DTOs;
 using Dapper;
-using TaskVault.API.DTOs;
 
 
 namespace TaskVault.API.Services;
@@ -21,6 +19,7 @@ public interface IAuthService
     string HashPassword(string plainPassword);
     bool VerifyPassword(string plainPassword, string hash);
     Task<bool> RegisterAsync(RegisterDto dto);
+    Task<string?> LoginAsync(LoginDto dto);
 
 }
 
@@ -109,6 +108,28 @@ public class AuthService : IAuthService
         );
 
         return true;
+    
+    }
+
+    public async Task<string?> LoginAsync(LoginDto dto)
+    {
+       
+        using var connection = _db.GetConnection();
+
+        var user = await connection.QueryFirstOrDefaultAsync<User>(
+            "SELECT * FROM users WHERE email = @Email AND is_active = 1",
+            new { dto.Email }
+        );
+
+        // user not found or password wrong — same message intentionally
+        // never tell the caller which one failed
+        if (user == null || !VerifyPassword(dto.Password, user.PasswordHash)){
+        
+            return null; 
+        
+        }
+
+        return GenerateJwt(user);
     
     }
 
