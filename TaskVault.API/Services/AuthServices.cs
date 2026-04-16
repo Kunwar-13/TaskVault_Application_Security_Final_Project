@@ -7,6 +7,9 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using TaskVault.API.Models;
+using TaskVault.API.DTOs;
+using Dapper;
+using TaskVault.API.DTOs;
 
 
 namespace TaskVault.API.Services;
@@ -17,6 +20,7 @@ public interface IAuthService
     string GenerateJwt(User user);
     string HashPassword(string plainPassword);
     bool VerifyPassword(string plainPassword, string hash);
+    Task<bool> RegisterAsync(RegisterDto dto);
 
 }
 
@@ -76,6 +80,35 @@ public class AuthService : IAuthService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    
+    }
+
+    public async Task<bool> RegisterAsync(RegisterDto dto)
+    {
+      
+        using var connection = _db.GetConnection();
+
+        // check if email or username already exists
+        var existing = await connection.QueryFirstOrDefaultAsync<int>(
+            "SELECT COUNT(1) FROM users WHERE email = @Email OR username = @Username",
+            new { dto.Email, dto.Username }
+        );
+
+        if (existing > 0{
+        
+            return false; 
+        
+        }
+
+        var hash = HashPassword(dto.Password);
+
+        await connection.ExecuteAsync(
+            @"INSERT INTO users (username, email, password_hash, role)
+          VALUES (@Username, @Email, @PasswordHash, 'User')",
+            new { dto.Username, dto.Email, PasswordHash = hash }
+        );
+
+        return true;
     
     }
 
