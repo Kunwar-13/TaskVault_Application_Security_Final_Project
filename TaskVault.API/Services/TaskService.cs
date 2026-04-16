@@ -8,7 +8,8 @@ namespace TaskVault.API.Services;
 public interface ITaskService
 {
 
-    Task<IEnumerable<Task>> GetTasksByUserAsync(int userId)
+    Task<IEnumerable<Task>> GetTasksByUserAsync(int userId);
+    Task<Task?> GetTaskByIdAsync(int taskId, int userId);
 
 }
 
@@ -34,6 +35,20 @@ public class TaskService : ITaskService
           WHERE user_id = @UserId
           ORDER BY created_at DESC",
             new { UserId = userId }
+        );
+    
+    }
+
+    public async Task<Task?> GetTaskByIdAsync(int taskId, int userId)
+    {
+    
+        using var connection = _db.GetConnection();
+
+        return await connection.QueryFirstOrDefaultAsync<Task>(
+            @"SELECT id, user_id, title, description, status, created_at, updated_at
+          FROM tasks
+          WHERE id = @TaskId AND user_id = @UserId",
+            new { TaskId = taskId, UserId = userId }
         );
     
     }
