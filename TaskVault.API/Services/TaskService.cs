@@ -12,6 +12,7 @@ public interface ITaskService
     Task<IEnumerable<Task>> GetTasksByUserAsync(int userId);
     Task<Task?> GetTaskByIdAsync(int taskId, int userId);
     Task<int> CreateTaskAsync(int userId, TaskDto dto);
+    Task<bool> UpdateTaskAsync(int taskId, int userId, TaskDto dto);
 
 }
 
@@ -75,6 +76,34 @@ public class TaskService : ITaskService
 
         return newId;
 
+    }
+
+    public async Task<bool> UpdateTaskAsync(int taskId, int userId, TaskDto dto)
+    {
+       
+        using var connection = _db.GetConnection();
+
+        var rows = await connection.ExecuteAsync(
+            @"UPDATE tasks
+          SET title       = @Title,
+              description = @Description,
+              status      = @Status,
+              updated_at  = @UpdatedAt
+          WHERE id = @TaskId AND user_id = @UserId",
+            new
+            {
+                dto.Title,
+                dto.Description,
+                dto.Status,
+                UpdatedAt = DateTime.UtcNow,
+                TaskId = taskId,
+                UserId = userId
+            }
+        );
+
+        // rows affected = 0 means task not found or not owned by this user
+        return rows > 0;
+    
     }
 
 }
