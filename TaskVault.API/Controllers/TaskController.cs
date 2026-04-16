@@ -61,4 +61,18 @@ public class TaskController : ControllerBase
     
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateTask(int id, [FromBody] TaskDto dto)
+    {
+        
+        var userId = User.GetUserId();
+        var success = await _taskService.UpdateTaskAsync(id, userId, dto);
+
+        if (!success)
+            return NotFound(new { message = "Task not found." });
+
+        return Ok(new { message = "Task updated." });
+    
+    }
+
 }
